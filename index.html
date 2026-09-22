@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CyneX Bank - Online Payment & Banking System</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet" />
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body class="auth-page">
+
+  <!-- Login Page Background Backdrop -->
+  <div class="login-bg-backdrop" id="loginBg"></div>
+
+  <!-- Background Decorative Blurs -->
+  <div class="glow-orb orb-1"></div>
+  <div class="glow-orb orb-2"></div>
+  <div class="glow-orb orb-3"></div>
+
+  <!-- Main Application Container -->
+  <div id="app" class="app-container">
+
+    <!-- Top Navigation Bar -->
+    <header class="top-nav">
+      <div class="nav-brand">
+        <div class="brand-icon">
+          <i class="fa-solid fa-building-columns"></i>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">CYNEX BANK </span>
+          <span class="brand-tag">Banking & Payment Gateway</span>
+        </div>
+        <!-- Database Status & Settings Pill (Always accessible) -->
+        <div class="nav-center-actions">
+          <button id="dbStatusBtn" class="db-pill-btn" type="button"
+            title="Click to view Database Connection & Manager">
+            <span class="db-indicator-dot dot-connecting" id="dbStatusDot"></span>
+            <i class="fa-solid fa-database"></i>
+            <span id="dbStatusText">Checking DB...</span>
+          </button>
+        </div>
+
+        <!-- Navigation Actions (Visible when logged in) -->
+        <div id="navUserSection" class="nav-user-section hidden">
+          <div class="balance-pill">
+            <span class="pill-label">Live Balance:</span>
+            <span class="pill-val" id="navBalance">Rs. 0.00</span>
+            <button id="toggleBalanceVisibility" class="icon-btn-sm" title="Toggle balance privacy">
+              <i class="fa-regular fa-eye" id="balanceEyeIcon"></i>
+            </button>
+          </div>
+
+          <div class="user-profile-badge">
+            <div class="avatar-circle" id="userAvatar">A</div>
+            <div class="user-meta">
+              <span class="username-display" id="navUsername">User</span>
+              <span class="account-role">Standard Tier</span>
+            </div>
+          </div>
+
+          <button id="terminalToggleBtn" class="btn btn-outline-nav" title="Toggle Gateway Live Console">
+            <i class="fa-solid fa-terminal"></i>
+            <span>Terminal</span>
+            <span class="pulse-indicator"></span>
+          </button>
+
+          <button id="logoutBtn" class="btn btn-danger-nav">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+            <span>Logout</span>
+          </button>
+        </div>
+    </header>
+
+    <!-- Global Toast Notification Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- VIEW 1: AUTHENTICATION (Login & Register) -->
+    <main id="authView" class="auth-view">
+      <div class="auth-wrapper">
+        <div class="auth-card">
+          <!-- Auth Header -->
+          <div class="auth-header">
+            <div class="auth-badge">
+              <i class="fa-solid fa-shield-halved"></i> Secure Banking Portal
+            </div>
+            <h1 id="authTitle">Welcome to CyneX Bank</h1>
+            <p id="authSubtitle">Sign in to manage your finances & payments.</p>
+          </div>
+
+          <!-- Auth Tab Switcher -->
+          <div class="tab-switcher">
+            <button id="tabLogin" class="tab-btn active">
+              <i class="fa-solid fa-right-to-bracket"></i> Login
+            </button>
+            <button id="tabRegister" class="tab-btn">
+              <i class="fa-solid fa-user-plus"></i> Create Account
+            </button>
+          </div>
+
+          <!-- LOGIN FORM -->
+          <form id="loginForm" class="auth-form">
+            <div class="form-group">
+              <label for="loginUsername"><i class="fa-regular fa-user"></i> Username</label>
+              <input type="text" id="loginUsername" placeholder="Enter username" required autocomplete="username" />
+            </div>
+
+            <div class="form-group">
+              <label for="loginPassword"><i class="fa-solid fa-lock"></i> Password / PIN</label>
+              <div class="password-wrapper">
+                <input type="password" id="loginPassword" placeholder="••••••••" required
+                  autocomplete="current-password" />
+                <button type="button" class="pwd-toggle" data-target="loginPassword">
+                  <i class="fa-regular fa-eye"></i>
+                </button>
+              </div>
+            </div>
+
+            <div id="loginError" class="error-banner hidden">
+              <i class="fa-solid fa-circle-exclamation"></i>
+              <span id="loginErrorMsg">Incorrect password!</span>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">
+              <span>Sign In to Account</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </button>
+
+            <!-- Quick Demo Accounts from Main.java -->
+            <div class="demo-accounts-box">
+              <span class="demo-box-label"><i class="fa-solid fa-users"></i> Quick Demo Accounts (from Main.java):</span>
+              <div class="demo-chips-grid">
+                <button type="button" class="demo-chip" data-user="akshith" data-pass="Akshith@123">
+                  <span class="chip-name">akshith</span>
+                  <span class="chip-bal">Rs.10k</span>
+                </button>
+                <button type="button" class="demo-chip" data-user="allen" data-pass="Allen@123">
+                  <span class="chip-name">allen</span>
+                  <span class="chip-bal">Rs.10k</span>
+                </button>
+                <button type="button" class="demo-chip" data-user="ishitha" data-pass="Ishitha@123">
+                  <span class="chip-name">ishitha</span>
+                  <span class="chip-bal">Rs.10k</span>
+                </button>
+                <button type="button" class="demo-chip" data-user="pooja" data-pass="Pooja@123">
+                  <span class="chip-name">pooja</span>
+                  <span class="chip-bal">Rs.10k</span>
+                </button>
+                <button type="button" class="demo-chip" data-user="shivapriya" data-pass="Shivapriya@123">
+                  <span class="chip-name">shivapriya</span>
+                  <span class="chip-bal">Rs.10k</span>
+                </button>
+              </div>
+            </div>
+          </form>
+
+          <!-- CREATE ACCOUNT FORM -->
+          <form id="registerForm" class="auth-form hidden">
+            <div class="form-group">
+              <label for="regUsername"><i class="fa-regular fa-user"></i> Choose Username</label>
+              <input type="text" id="regUsername" placeholder="Enter your desired username" required
+                autocomplete="off" />
+            </div>
+
+            <div class="form-group">
+              <label for="regPassword"><i class="fa-solid fa-lock"></i> Create Password</label>
+              <div class="password-wrapper">
+                <input type="password" id="regPassword" placeholder="Enter secure password" required
+                  autocomplete="new-password" />
+                <button type="button" class="pwd-toggle" data-target="regPassword">
+                  <i class="fa-regular fa-eye"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="regAmount"><i class="fa-solid fa-indian-rupee-sign"></i> Initial Deposit Amount</label>
+              <div class="input-prefix-wrapper">
+                <span class="currency-prefix">Rs.</span>
+                <input type="number" id="regAmount" placeholder="5000" min="0" step="any" required />
+              </div>
+              <small class="field-hint">Amount cannot be negative (as per Java validator rules).</small>
+            </div>
+
+            <div id="regError" class="error-banner hidden">
+              <i class="fa-solid fa-circle-exclamation"></i>
+              <span id="regErrorMsg">Username already exists!</span>
+            </div>
+
+            <button type="submit" class="btn btn-success btn-block">
+              <span>Create Bank Account</span>
+              <i class="fa-solid fa-check"></i>
+            </button>
+          </form>
+
+          <div class="auth-footer">
+            <i class="fa-solid fa-code"></i> Implements Java OOP Architecture: <code>Account</code>,
+            <code>PaymentGateway</code>, & <code>PaymentValidator</code>.
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- VIEW 2: BANKING DASHBOARD (Logged in) -->
+    <main id="dashboardView" class="dashboard-view hidden">
+
+      <!-- Top Section: Account Overview & Virtual Debit Card -->
+      <section class="overview-grid">
+
+        <!-- Virtual Debit Card Widget -->
+        <div class="virtual-card-wrapper">
+          <div class="virtual-card" id="virtualCard">
+            <div class="card-chip-row">
+              <div class="chip-graphic"></div>
+              <i class="fa-solid fa-wifi contactless-icon"></i>
+              <span class="card-brand-logo"><i class="fa-brands fa-cc-mastercard"></i> CyneX Platinum</span>
+            </div>
+            <div class="card-number-display" id="cardMaskedNum">
+              •••• •••• •••• 8492
+            </div>
+            <div class="card-bottom-row">
+              <div class="card-holder-info">
+                <span class="card-label">ACCOUNT HOLDER</span>
+                <span class="card-holder-name" id="cardHolderName">CYNEX USER</span>
+              </div>
+              <div class="card-expiry-info">
+                <span class="card-label">VALID THRU</span>
+                <span class="card-expiry-date" id="cardExpiryDisplay">12/29</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Account Balance & Quick Actions Card -->
+        <div class="balance-card">
+          <div class="balance-card-header">
+            <div>
+              <span class="balance-sub">Current Available Balance</span>
+              <div class="balance-number-row">
+                <h2 id="mainBalanceDisplay">Rs. 10,000.00</h2>
+              </div>
+            </div>
+            <span class="account-status-badge">
+              <span class="status-dot"></span> Active Account
+            </span>
+          </div>
+
+          <div class="quick-stats-row">
+            <div class="stat-item">
+              <span class="stat-title">Total Payments</span>
+              <span class="stat-value text-red" id="totalPaidStat">Rs. 0.00</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-title">Deposits</span>
+              <span class="stat-value text-green" id="totalDepositsStat">Rs. 0.00</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-title">Transactions</span>
+              <span class="stat-value" id="txCountStat">0</span>
+            </div>
+          </div>
+
+          <!-- Primary Actions -->
+          <div class="primary-actions-row">
+            <button id="openPaymentModalBtn" class="btn btn-primary action-btn">
+              <i class="fa-solid fa-paper-plane"></i>
+              <span>Make Payment</span>
+            </button>
+            <button id="openAddMoneyModalBtn" class="btn btn-secondary action-btn">
+              <i class="fa-solid fa-wallet"></i>
+              <span>Add Money</span>
+            </button>
+            <button id="resetDemoBtn" class="btn btn-outline-dim action-btn"
+              title="Reset accounts & history to default">
+              <i class="fa-solid fa-arrows-rotate"></i>
+              <span>Reset Data</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Interactive Refund Prompt Banner (Appears right after a successful payment) -->
+      <section id="refundPromptBanner" class="refund-prompt-banner hidden">
+        <div class="refund-prompt-content">
+          <div class="refund-prompt-icon">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+          </div>
+          <div class="refund-prompt-text">
+            <span class="prompt-title">Payment Successful!</span>
+            <p>Do you want to refund payment <strong id="promptPaymentId">TXN-001</strong> of <strong
+                id="promptPaymentAmount">Rs. 500</strong>? (Matching Java Prompt:
+              <code>Do you want a refund? (yes/no)</code>)
+            </p>
+          </div>
+        </div>
+        <div class="refund-prompt-actions">
+          <button id="instantRefundYesBtn" class="btn btn-refund-action">
+            <i class="fa-solid fa-rotate-left"></i> Yes, Refund Now
+          </button>
+          <button id="instantRefundNoBtn" class="btn btn-ghost">
+            Keep Payment (No)
+          </button>
+        </div>
+      </section>
+
+      <!-- Transactions & History Section -->
+      <section class="tx-section">
+        <div class="section-header-row">
+          <div>
+            <h3><i class="fa-solid fa-receipt"></i> Transaction Statement & Payment History</h3>
+            <p>Track payments, inspect gateway details, print receipts, and issue instant refunds.</p>
+          </div>
+          <div class="tx-filter-group">
+            <select id="txFilterSelect" class="form-select-sm">
+              <option value="ALL">All Methods</option>
+              <option value="Credit Card">Credit Card</option>
+              <option value="PayPal">PayPal</option>
+              <option value="Bank Transfer">Bank Transfer</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Transactions Table Card -->
+        <div class="table-card">
+          <table class="tx-table" id="txTable">
+            <thead>
+              <tr>
+                <th>Payment ID</th>
+                <th>Method</th>
+                <th>Account / Target Details</th>
+                <th>Amount</th>
+                <th>Date & Time</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="txTableBody">
+              <!-- Rendered Dynamically -->
+            </tbody>
+          </table>
+
+          <!-- Empty State -->
+          <div id="txEmptyState" class="empty-state">
+            <i class="fa-solid fa-folder-open"></i>
+            <h4>No transactions recorded yet</h4>
+            <p>Make your first payment using Credit Card, PayPal, or Bank Transfer.</p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- FLOATING/DOCKABLE GATEWAY SYSTEM CONSOLE TERMINAL -->
+    <aside id="gatewayTerminal" class="gateway-terminal minimized">
+      <div class="terminal-header" id="terminalHeader">
+        <div class="terminal-title">
+          <i class="fa-solid fa-terminal"></i>
+          <span>Payment Gateway System Console</span>
+          <span class="live-dot" title="Online & listening"></span>
+        </div>
+        <div class="terminal-controls">
+          <button id="clearTerminalBtn" class="term-btn" title="Clear terminal logs">
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
+          <button id="toggleTerminalBtn" class="term-btn" title="Expand / Minimize terminal">
+            <i class="fa-solid fa-chevron-up" id="terminalChevron"></i>
+          </button>
+        </div>
+      </div>
+      <div class="terminal-body" id="terminalLogs">
+        <div class="term-line sys">CyneX Bank Payment Gateway v2.4 initialized.</div>
+        <div class="term-line sys">Ready for dynamic polymorphism dispatch: CreditCardPayment, PayPalPayment,
+          BankTransferPayment.</div>
+        <div class="term-line sys">PaymentValidator rules loaded: (amount > 0, account.balance >= amount,
+          card.expiryYear >= currentYear).</div>
+      </div>
+    </aside>
+
+  </div><!-- /#app -->
+
+
+  <!-- ====================================================== -->
+  <!-- MODAL: MAKE PAYMENT (GATEWAY)                          -->
+  <!-- ====================================================== -->
+  <div id="paymentModal" class="modal-backdrop hidden">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title-box">
+          <div class="modal-icon-badge"><i class="fa-solid fa-credit-card"></i></div>
+          <div>
+            <h3>Payment Gateway</h3>
+            <p>Select your payment method and authorize transfer</p>
+          </div>
+        </div>
+        <button class="modal-close-btn" data-close="paymentModal">&times;</button>
+      </div>
+
+      <!-- Payment Method Selector Tabs -->
+      <div class="method-selector">
+        <button class="method-tab active" data-method="creditCard">
+          <i class="fa-regular fa-credit-card"></i>
+          <span>Credit Card</span>
+        </button>
+        <button class="method-tab" data-method="paypal">
+          <i class="fa-brands fa-paypal"></i>
+          <span>PayPal</span>
+        </button>
+        <button class="method-tab" data-method="bankTransfer">
+          <i class="fa-solid fa-building-columns"></i>
+          <span>Bank Transfer</span>
+        </button>
+      </div>
+
+      <!-- Payment Form -->
+      <form id="paymentForm" class="modal-form">
+
+        <!-- Common Inputs: Payment ID & Amount -->
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="payIdInput"><i class="fa-solid fa-hashtag"></i> Payment ID</label>
+            <div class="input-with-action">
+              <input type="text" id="payIdInput" required />
+              <button type="button" id="genIdBtn" class="btn-input-action" title="Generate New ID">
+                <i class="fa-solid fa-dice"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="payAmountInput"><i class="fa-solid fa-indian-rupee-sign"></i> Amount (Rs.)</label>
+            <input type="number" id="payAmountInput" placeholder="0.00" min="1" step="any" required />
+          </div>
+        </div>
+
+        <!-- TAB 1: CREDIT CARD FIELDS -->
+        <div id="fieldsCreditCard" class="method-fields">
+          <div class="form-group">
+            <label for="ccNumberInput"><i class="fa-regular fa-credit-card"></i> Card Number</label>
+            <div class="input-prefix-wrapper">
+              <input type="text" id="ccNumberInput" placeholder="4532 8492 1092 5683" maxlength="19" required />
+              <span class="card-type-detector" id="ccBrandBadge"><i class="fa-solid fa-credit-card"></i></span>
+            </div>
+            <small class="field-hint">Last 4 digits will be shown as <code>**** **** **** 5683</code> in
+              statements.</small>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="ccExpiryYearInput"><i class="fa-regular fa-calendar"></i> Expiry Year</label>
+              <input type="number" id="ccExpiryYearInput" placeholder="e.g. 2027" min="2000" max="2099" required />
+              <small class="field-hint">Validated against current year <strong
+                  id="currentYearHint">2026</strong>.</small>
+            </div>
+            <div class="form-group">
+              <label for="ccCvvInput"><i class="fa-solid fa-shield"></i> CVV</label>
+              <input type="password" id="ccCvvInput" placeholder="•••" maxlength="4" value="888" />
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: PAYPAL FIELDS -->
+        <div id="fieldsPayPal" class="method-fields hidden">
+          <div class="form-group">
+            <label for="ppEmailInput"><i class="fa-regular fa-envelope"></i> PayPal Email Address</label>
+            <input type="email" id="ppEmailInput" placeholder="buyer@example.com" />
+            <small class="field-hint">Will connect to authenticated PayPal account for immediate settlement.</small>
+          </div>
+        </div>
+
+        <!-- TAB 3: BANK TRANSFER FIELDS -->
+        <div id="fieldsBankTransfer" class="method-fields hidden">
+          <div class="form-group">
+            <label for="btAccountInput"><i class="fa-solid fa-building-columns"></i> Destination Bank Account
+              Number</label>
+            <input type="text" id="btAccountInput" placeholder="987654321012" maxlength="18" />
+            <small class="field-hint">Will be masked as <code>****1012</code> in receipts and gateway logs.</small>
+          </div>
+          <div class="form-group">
+            <label for="btIfscInput"><i class="fa-solid fa-barcode"></i> Bank IFSC / Routing Code</label>
+            <input type="text" id="btIfscInput" placeholder="CYNEX004812" value="CYNEX004812" />
+          </div>
+        </div>
+
+        <!-- Modal Error Display Banner -->
+        <div id="paymentErrorBanner" class="error-banner hidden">
+          <i class="fa-solid fa-circle-exclamation"></i>
+          <span id="paymentErrorMsg">Validation Error</span>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-ghost" data-close="paymentModal">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-submit-pay">
+            <i class="fa-solid fa-lock"></i>
+            <span>Authorize & Pay</span>
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+
+  <!-- ====================================================== -->
+  <!-- MODAL: ADD MONEY (DEPOSIT)                             -->
+  <!-- ====================================================== -->
+  <div id="addMoneyModal" class="modal-backdrop hidden">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-header">
+        <div class="modal-title-box">
+          <div class="modal-icon-badge icon-green"><i class="fa-solid fa-wallet"></i></div>
+          <div>
+            <h3>Deposit Money</h3>
+            <p>Add funds to your current account balance</p>
+          </div>
+        </div>
+        <button class="modal-close-btn" data-close="addMoneyModal">&times;</button>
+      </div>
+
+      <form id="addMoneyForm" class="modal-form">
+        <div class="form-group">
+          <label for="depositAmountInput"><i class="fa-solid fa-indian-rupee-sign"></i> Deposit Amount (Rs.)</label>
+          <div class="input-prefix-wrapper">
+            <span class="currency-prefix">Rs.</span>
+            <input type="number" id="depositAmountInput" placeholder="1000" min="1" step="any" required />
+          </div>
+        </div>
+
+        <!-- Quick Amount Presets -->
+        <div class="preset-chips-row">
+          <button type="button" class="preset-chip" data-amt="500">+Rs. 500</button>
+          <button type="button" class="preset-chip" data-amt="1000">+Rs. 1,000</button>
+          <button type="button" class="preset-chip" data-amt="5000">+Rs. 5,000</button>
+          <button type="button" class="preset-chip" data-amt="10000">+Rs. 10,000</button>
+        </div>
+
+        <div id="depositErrorBanner" class="error-banner hidden">
+          <i class="fa-solid fa-circle-exclamation"></i>
+          <span id="depositErrorMsg">Invalid amount!</span>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-ghost" data-close="addMoneyModal">Cancel</button>
+          <button type="submit" class="btn btn-success">
+            <i class="fa-solid fa-plus"></i>
+            <span>Add Funds</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- ====================================================== -->
+  <!-- MODAL: TRANSACTION RECEIPT                             -->
+  <!-- ====================================================== -->
+  <div id="receiptModal" class="modal-backdrop hidden">
+    <div class="modal-dialog modal-receipt">
+      <div class="receipt-paper" id="printableReceipt">
+        <!-- Receipt Top -->
+        <div class="receipt-header">
+          <div class="receipt-logo">
+            <i class="fa-solid fa-building-columns"></i>
+            <span>CyneX Bank</span>
+          </div>
+          <div class="receipt-status-stamp" id="receiptStamp">PAID</div>
+        </div>
+
+        <div class="receipt-divider"></div>
+
+        <div class="receipt-amount-box">
+          <span class="receipt-label">TOTAL AMOUNT</span>
+          <h2 id="receiptAmount">Rs. 0.00</h2>
+        </div>
+
+        <div class="receipt-details-list">
+          <div class="receipt-row">
+            <span>Payment ID</span>
+            <strong id="receiptPayId">TXN-0000</strong>
+          </div>
+          <div class="receipt-row">
+            <span>Payment Method</span>
+            <strong id="receiptMethod">Credit Card</strong>
+          </div>
+          <div class="receipt-row">
+            <span>Account User</span>
+            <strong id="receiptUser">user</strong>
+          </div>
+          <div class="receipt-row">
+            <span>Target / Details</span>
+            <strong id="receiptTarget">**** **** **** 1234</strong>
+          </div>
+          <div class="receipt-row">
+            <span>Date & Time</span>
+            <strong id="receiptDate">2026-09-09 21:30</strong>
+          </div>
+          <div class="receipt-row">
+            <span>Status</span>
+            <strong id="receiptStatus">Completed</strong>
+          </div>
+        </div>
+
+        <div class="receipt-barcode">
+          <div class="barcode-lines"></div>
+          <span class="barcode-num" id="receiptBarcodeText">TXN-0000-CYNEX</span>
+        </div>
+      </div>
+
+      <div class="modal-footer receipt-footer">
+        <button type="button" class="btn btn-ghost" data-close="receiptModal">Close</button>
+        <button type="button" id="printReceiptBtn" class="btn btn-primary">
+          <i class="fa-solid fa-print"></i> Print Receipt
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================== -->
+  <!-- MODAL: DATABASE CONNECTION & MANAGER                   -->
+  <!-- ====================================================== -->
+  <div id="dbModal" class="modal-backdrop hidden">
+    <div class="modal-dialog modal-db">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <div class="modal-icon-badge db-badge-icon">
+            <i class="fa-solid fa-database"></i>
+          </div>
+          <div>
+            <h3>Database Configuration & Manager</h3>
+            <p class="modal-sub">Configure MySQL / PostgreSQL connection & monitor live database tables.</p>
+          </div>
+        </div>
+        <button type="button" class="modal-close-btn" data-close="dbModal">&times;</button>
+      </div>
+
+      <!-- Modal Tabs -->
+      <div class="db-modal-tabs">
+        <button type="button" class="db-tab-btn active" id="tabDbSettings">
+          <i class="fa-solid fa-sliders"></i> Connection Settings
+        </button>
+        <button type="button" class="db-tab-btn" id="tabDbRecords">
+          <i class="fa-solid fa-table"></i> Live DB Tables
+        </button>
+        <button type="button" class="db-tab-btn" id="tabDbSchema">
+          <i class="fa-solid fa-code"></i> SQL Schema
+        </button>
+      </div>
+
+      <div class="modal-body db-modal-body">
+        <!-- TAB 1: CONNECTION SETTINGS -->
+        <div id="dbTabContentSettings" class="db-tab-content">
+          <!-- Live Status Banner -->
+          <div class="db-status-banner" id="dbStatusBanner">
+            <div class="banner-left">
+              <span class="status-indicator-lg dot-connecting" id="bannerStatusDot"></span>
+              <div>
+                <strong id="bannerStatusTitle">Checking Database Server...</strong>
+                <p id="bannerStatusDesc" class="text-sm text-muted">Backend URL: http://localhost:3000</p>
+              </div>
+            </div>
+            <button type="button" id="btnRefreshDbStatus" class="btn btn-sm btn-ghost" title="Re-check status">
+              <i class="fa-solid fa-rotate"></i> Ping Server
+            </button>
+          </div>
+
+          <form id="dbConfigForm" class="db-config-grid">
+            <div class="form-group">
+              <label><i class="fa-solid fa-server"></i> Database Engine</label>
+              <select id="cfgDbType" class="custom-select">
+                <option value="mysql">MySQL (Default Port: 3306)</option>
+                <option value="postgres">PostgreSQL (Default Port: 5432)</option>
+                <option value="sqlite">SQLite (Built-in Relational File)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label><i class="fa-solid fa-network-wired"></i> Host / Server</label>
+              <input type="text" id="cfgDbHost" class="custom-input" value="localhost"
+                placeholder="e.g. localhost or 127.0.0.1" />
+            </div>
+
+            <div class="form-group">
+              <label><i class="fa-solid fa-plug"></i> Port</label>
+              <input type="number" id="cfgDbPort" class="custom-input" value="3306" placeholder="3306" />
+            </div>
+
+            <div class="form-group">
+              <label><i class="fa-solid fa-folder-open"></i> Database Name</label>
+              <input type="text" id="cfgDbName" class="custom-input" value="cynexbank_db" placeholder="cynexbank_db" />
+            </div>
+
+            <div class="form-group">
+              <label><i class="fa-solid fa-user"></i> Username</label>
+              <input type="text" id="cfgDbUser" class="custom-input" value="root" placeholder="root" />
+            </div>
+
+            <div class="form-group">
+              <label><i class="fa-solid fa-key"></i> Password</label>
+              <input type="password" id="cfgDbPass" class="custom-input"
+                placeholder="Enter DB password (blank for none)" />
+            </div>
+
+            <div class="db-actions-row">
+              <button type="button" id="btnTestDbConnection" class="btn btn-outline">
+                <i class="fa-solid fa-vial"></i> Test Connection
+              </button>
+              <button type="submit" class="btn btn-primary">
+                <i class="fa-solid fa-floppy-disk"></i> Save & Connect
+              </button>
+            </div>
+          </form>
+
+          <div id="dbTestAlert" class="alert-box hidden"></div>
+        </div>
+
+        <!-- TAB 2: LIVE DATABASE TABLES -->
+        <div id="dbTabContentRecords" class="db-tab-content hidden">
+          <div class="db-stats-row">
+            <div class="db-mini-stat">
+              <span class="label">Total Accounts:</span>
+              <strong id="dbStatAccounts">0</strong>
+            </div>
+            <div class="db-mini-stat">
+              <span class="label">Total Transactions:</span>
+              <strong id="dbStatTxs">0</strong>
+            </div>
+            <div class="db-mini-stat">
+              <span class="label">Total Volume:</span>
+              <strong id="dbStatVolume">Rs. 0.00</strong>
+            </div>
+            <button type="button" id="btnReloadDbRecords" class="btn btn-sm btn-ghost">
+              <i class="fa-solid fa-rotate"></i> Refresh
+            </button>
+          </div>
+
+          <div class="db-preview-tables">
+            <div class="db-preview-section">
+              <div class="preview-section-header">
+                <h4><i class="fa-solid fa-users"></i> Table: <code>accounts</code></h4>
+                <span class="badge-sm" id="badgeAccountsCount">0 records</span>
+              </div>
+              <div class="table-responsive-sm">
+                <table class="data-table-sm" id="tblAccountsPreview">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Username</th>
+                      <th>Balance</th>
+                      <th>Created At</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tblAccountsBody">
+                    <tr>
+                      <td colspan="4" class="text-muted text-center">Loading accounts...</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="db-preview-section">
+              <div class="preview-section-header">
+                <h4><i class="fa-solid fa-receipt"></i> Table: <code>transactions</code></h4>
+                <span class="badge-sm" id="badgeTxsCount">0 records</span>
+              </div>
+              <div class="table-responsive-sm">
+                <table class="data-table-sm" id="tblTxsPreview">
+                  <thead>
+                    <tr>
+                      <th>Payment ID</th>
+                      <th>Username</th>
+                      <th>Amount</th>
+                      <th>Method</th>
+                      <th>Status</th>
+                      <th>Created At</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tblTxsBody">
+                    <tr>
+                      <td colspan="6" class="text-muted text-center">Loading transactions...</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 3: SQL SCHEMA VIEWER -->
+        <div id="dbTabContentSchema" class="db-tab-content hidden">
+          <div class="schema-instructions">
+            <p class="text-sm text-muted">
+              Use this schema to create the tables in your MySQL Workbench, phpMyAdmin, or pgAdmin:
+            </p>
+            <div class="code-box-header">
+              <span>schema.sql</span>
+              <button type="button" id="btnCopySchema" class="btn btn-xs btn-ghost">
+                <i class="fa-regular fa-copy"></i> Copy SQL
+              </button>
+            </div>
+            <pre class="code-preview" id="schemaCodePreview"><code>CREATE TABLE IF NOT EXISTS accounts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    balance DECIMAL(12, 2) NOT NULL DEFAULT 0.00,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS transactions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    payment_id VARCHAR(50) NOT NULL UNIQUE,
+    username VARCHAR(50) NOT NULL,
+    amount DECIMAL(12, 2) NOT NULL,
+    method_type VARCHAR(30) NOT NULL,
+    details VARCHAR(255) DEFAULT '',
+    status VARCHAR(20) NOT NULL DEFAULT 'SUCCESS',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_tx_username (username),
+    INDEX idx_tx_status (status)
+);</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost" data-close="dbModal">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom JavaScript -->
+  <script src="app.js"></script>
+</body>
+
+</html>
